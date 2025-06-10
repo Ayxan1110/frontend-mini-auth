@@ -46,7 +46,6 @@ export interface AuthError {
   };
 }
 
-// Optional unified error response (for axios handling)
 export interface ErrorResponse {
   error: {
     code: string;

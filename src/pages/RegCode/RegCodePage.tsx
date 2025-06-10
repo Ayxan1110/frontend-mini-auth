@@ -1,9 +1,11 @@
 import { useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
+import { useToast } from '../../context/toast-context';
 
 const RegCodePage = () => {
   const location = useLocation();
   const navigate = useNavigate();
+  const { showToast } = useToast();
   const loginCode = location.state?.loginCode;
 
   useEffect(() => {
@@ -12,24 +14,24 @@ const RegCodePage = () => {
     }
   }, [loginCode, navigate]);
 
-  if (!loginCode) {
-    return <p style={{ padding: '1rem' }}>Redirecting...</p>;
-  }
+  const copyToClipboard = async () => {
+    try {
+      await navigator.clipboard.writeText(loginCode);
+      showToast('Copied!', 'success');
+    } catch (err) {
+      showToast('Copy failed. Try again.', 'error');
+    }
+  };
+
+  if (!loginCode) return null;
 
   return (
     <div style={{ padding: '1rem' }}>
       <h2>Your Anonymous Login Code</h2>
-      <p
-        style={{
-          fontSize: '1.5rem',
-          fontWeight: 'bold',
-          fontFamily: 'monospace',
-          wordBreak: 'break-all',
-        }}
-      >
-        {loginCode}
+      <p>
+        <strong>{loginCode}</strong>
       </p>
-      <p>Save this code to log in later.</p>
+      <button onClick={copyToClipboard}>Copy to Clipboard</button>
     </div>
   );
 };

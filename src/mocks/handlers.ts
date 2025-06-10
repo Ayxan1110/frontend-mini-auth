@@ -22,6 +22,13 @@ export const handlers = [
     );
   }),
 
+  rest.post('http://localhost:8080/v1/auth/login/google', (_req, res, ctx) => {
+    return res(
+      ctx.status(200),
+      ctx.json({ data: { session: 'mock-session' } }),
+    );
+  }),
+
   rest.post(
     'http://localhost:8080/v1/auth/login/email',
     async (req, res, ctx) => {

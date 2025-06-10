@@ -30,7 +30,15 @@ const RegPage = () => {
         {loading ? 'Registering…' : 'Anonymous Registration'}
       </button>
 
-      {error && <p style={{ color: 'red', marginTop: '1rem' }}>{error}</p>}
+      {error && (
+        <output
+          id="reg-feedback"
+          aria-live="polite"
+          style={{ color: 'red', marginTop: '1rem', display: 'block' }}
+        >
+          {error}
+        </output>
+      )}
     </div>
   );
 };

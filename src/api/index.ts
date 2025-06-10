@@ -1,11 +1,11 @@
 import axios from 'axios';
 import type {
+  EmptyDataResponse,
+  LoginCodeRequest,
+  LoginEmailRequest,
   RegisterCodeResponse,
   RegisterEmailRequest,
-  LoginEmailRequest,
-  LoginCodeRequest,
   SessionResponse,
-  EmptyDataResponse,
 } from '../types/api';
 
 const api = axios.create({
@@ -21,24 +21,37 @@ export const registerAnonymous = async (): Promise<RegisterCodeResponse> => {
 };
 
 export const registerWithEmail = async (
-  payload: RegisterEmailRequest
+  payload: RegisterEmailRequest,
 ): Promise<EmptyDataResponse> => {
-  const res = await api.post<EmptyDataResponse>('/user/register/email', payload);
+  const res = await api.post<EmptyDataResponse>(
+    '/user/register/email',
+    payload,
+  );
   return res.data;
 };
 
 export const loginWithEmail = async (
-  payload: LoginEmailRequest
+  payload: LoginEmailRequest,
 ): Promise<SessionResponse> => {
   const res = await api.post<SessionResponse>('/auth/login/email', payload);
   return res.data;
 };
 
 export const loginWithCode = async (
-  payload: LoginCodeRequest
+  payload: LoginCodeRequest,
 ): Promise<SessionResponse> => {
   const res = await api.post<SessionResponse>('/auth/login/code', payload);
   return res.data;
+};
+
+export const loginWithGoogle = async (): Promise<SessionResponse> => {
+  // Fake delay for realism
+  await new Promise((resolve) => setTimeout(resolve, 500));
+  return {
+    data: {
+      session: 'mock-session',
+    },
+  };
 };
 
 export default api;

@@ -2,6 +2,8 @@ import React from 'react';
 import ReactDOM from 'react-dom/client';
 import { BrowserRouter } from 'react-router-dom';
 import App from './App';
+import { AuthProvider } from './context/auth-context';
+import { ToastProvider } from './context/toast-context';
 
 async function prepare() {
   if (import.meta.env.DEV) {
@@ -16,7 +18,11 @@ prepare().then(() => {
     ReactDOM.createRoot(rootEl).render(
       <React.StrictMode>
         <BrowserRouter>
-          <App />
+          <AuthProvider>
+            <ToastProvider>
+              <App />
+            </ToastProvider>
+          </AuthProvider>
         </BrowserRouter>
       </React.StrictMode>,
     );

@@ -1,17 +1,27 @@
-import { useState } from 'react';
+import type React from 'react';
+import { useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
+import { loginWithEmail, registerWithEmail } from '../../api';
+import { useAuth } from '../../context/auth-context';
+import { useToast } from '../../context/toast-context';
+import { useCountdown } from '../../hooks/useCountdown';
 import { isPinCode } from '../../utils/validators';
-import { loginWithEmail } from '../../api';
-import type { LoginEmailRequest } from '../../types/api';
 
 const EmailAuthPage = () => {
   const [pin, setPin] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+  const { countdown, start } = useCountdown(60);
 
   const location = useLocation();
   const navigate = useNavigate();
+  const { login } = useAuth();
+  const { showToast } = useToast();
   const email = location.state?.email;
+
+  useEffect(() => {
+    start();
+  }, [start]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -24,18 +34,26 @@ const EmailAuthPage = () => {
 
     setLoading(true);
     try {
-      const payload: LoginEmailRequest = {
-        email,
-        pincode: Number(pin),
-      };
-      const res = await loginWithEmail(payload);
-      alert(`Logged in! Session: ${res.data.session}`);
+      const res = await loginWithEmail({ email, pincode: Number(pin) });
+      login(res.data.session);
+      showToast('Login successful!', 'success');
       navigate('/dashboard');
-    } catch (err) {
-      console.error('PIN verification failed:', err);
+    } catch {
       setError('Invalid PIN or server error.');
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleResend = async () => {
+    if (countdown > 0) return;
+
+    try {
+      await registerWithEmail({ email, lang: 'en' });
+      start();
+      showToast('Verification code resent', 'success');
+    } catch {
+      showToast('Failed to resend PIN', 'error');
     }
   };
 
@@ -66,7 +84,23 @@ const EmailAuthPage = () => {
         </button>
       </form>
 
-      {error && <p style={{ color: 'red' }}>{error}</p>}
+      <div style={{ marginTop: '1rem' }}>
+        {countdown > 0 ? (
+          <p>Resend available in {countdown}s</p>
+        ) : (
+          <button onClick={handleResend}>Resend Code</button>
+        )}
+      </div>
+
+      {error && (
+        <output
+          id="feedback"
+          aria-live="polite"
+          style={{ color: 'red', marginTop: '0.5rem', display: 'block' }}
+        >
+          {error}
+        </output>
+      )}
     </div>
   );
 };
