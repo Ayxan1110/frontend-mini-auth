@@ -1,0 +1,46 @@
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+.reg-container {
+  min-height: 100vh;
+  background: #f9f9f6;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 40px;
+}
+
+.reg-box {
+  width: 100%;
+  max-width: 450px;
+  padding: 30px;
+  background: #fff;
+  border: 1px solid #eee;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.04);
+}
+
+.reg-title {
+  font-size: 28px;
+  margin-bottom: 24px;
+  padding-bottom: 12px;
+}
+
+.reg-button {
+  width: 100%;
+  padding: 12px;
+  font-size: 14px;
+  border-radius: 6px;
+  background-color: #000;
+  color: #fff;
+  border: none;
+  cursor: pointer;
+}
+
+.reg-button:disabled {
+  background-color: #000;
+  cursor: not-allowed;
+}

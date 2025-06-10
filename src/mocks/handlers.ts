@@ -1,4 +1,5 @@
 import { rest } from 'msw';
+import { isEmail } from '../utils/validators';
 
 export const handlers = [
   rest.post('http://localhost:8080/v1/user/register/code', (_req, res, ctx) => {
@@ -10,7 +11,29 @@ export const handlers = [
 
   rest.post(
     'http://localhost:8080/v1/user/register/email',
-    (_req, res, ctx) => {
+    async (req, res, ctx) => {
+      const { email } = await req.json();
+
+      const invalid = !isEmail(email);
+
+      if (invalid) {
+        return res(
+          ctx.status(422),
+          ctx.json({
+            error: {
+              code: 'VALIDATION_ERROR',
+              message: 'Email address format is incorrect',
+              details: [
+                {
+                  field: 'email',
+                  message: 'Email address format is incorrect',
+                },
+              ],
+            },
+          }),
+        );
+      }
+
       return res(ctx.status(200), ctx.json({ data: [] }));
     },
   ),
@@ -22,18 +45,11 @@ export const handlers = [
     );
   }),
 
-  rest.post('http://localhost:8080/v1/auth/login/google', (_req, res, ctx) => {
-    return res(
-      ctx.status(200),
-      ctx.json({ data: { session: 'mock-session' } }),
-    );
-  }),
-
   rest.post(
     'http://localhost:8080/v1/auth/login/email',
     async (req, res, ctx) => {
-      const body = await req.json();
-      if (body.pincode === 123456) {
+      const { pincode } = await req.json();
+      if (pincode === 123456) {
         return res(
           ctx.status(200),
           ctx.json({ data: { session: 'mock-email-session-token' } }),
@@ -47,6 +63,16 @@ export const handlers = [
             message: 'PIN code expired or missing',
           },
         }),
+      );
+    },
+  ),
+
+  rest.post(
+    'http://localhost:8080/v1/user/register/google_account',
+    (_req, res, ctx) => {
+      return res(
+        ctx.status(200),
+        ctx.json({ data: { session: 'mock-session' } }),
       );
     },
   ),

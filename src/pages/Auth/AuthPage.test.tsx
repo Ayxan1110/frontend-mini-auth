@@ -42,7 +42,7 @@ describe('AuthPage', () => {
 
   it('logs in with 16-digit anonymous code', async () => {
     renderWithProviders(<AuthPage />);
-    const input = screen.getByPlaceholderText(/enter email or 16-digit code/i);
+    const input = screen.getByTestId('auth-input');
     fireEvent.change(input, { target: { value: '1234567890123456' } });
 
     const [continueBtn] = screen.getAllByRole('button', { name: /continue/i });
@@ -66,6 +66,37 @@ describe('AuthPage', () => {
     await waitFor(() => {
       expect(loginMock).toHaveBeenCalledWith('mock-session');
       expect(navigateMock).toHaveBeenCalledWith('/dashboard');
+    });
+  });
+
+  it('sends email and navigates to email auth page', async () => {
+    renderWithProviders(<AuthPage />);
+    const input = screen.getByTestId('auth-input');
+    fireEvent.change(input, { target: { value: 'test@example.com' } });
+
+    const [continueBtn] = screen.getAllByRole('button', { name: /continue/i });
+    fireEvent.click(continueBtn);
+
+    await waitFor(() => {
+      expect(navigateMock).toHaveBeenCalledWith('/auth/email', {
+        state: { email: 'test@example.com' },
+      });
+    });
+  });
+
+  it('shows error for invalid input format', async () => {
+    renderWithProviders(<AuthPage />);
+    const input = screen.getByTestId('auth-input');
+    fireEvent.change(input, { target: { value: 'abcd' } });
+
+    const [continueBtn] = screen.getAllByRole('button', { name: /continue/i });
+    fireEvent.click(continueBtn);
+
+    await waitFor(() => {
+      const matches = screen.getAllByText(
+        /enter a valid email or 16-digit code/i,
+      );
+      expect(matches.length).toBeGreaterThan(0);
     });
   });
 });

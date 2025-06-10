@@ -1,4 +1,3 @@
-// -------- Requests --------
 export interface RegisterEmailRequest {
   email: string;
   lang: string;
@@ -13,7 +12,11 @@ export interface LoginCodeRequest {
   login_code: string;
 }
 
-// -------- Responses --------
+export interface GoogleRequest {
+  code: string;
+  redirect_uri: string;
+}
+
 export interface RegisterCodeResponse {
   data: {
     login_code: string;
@@ -30,18 +33,20 @@ export interface EmptyDataResponse {
   data: [];
 }
 
-// -------- Errors --------
 export interface ValidationError {
   error: {
-    code: string;
+    code: 'VALIDATION_ERROR';
     message: string;
-    details: Array<{ field: string; message: string }>;
+    details: Array<{
+      field: string;
+      message: string;
+    }>;
   };
 }
 
 export interface AuthError {
   error: {
-    code: string;
+    code: 'AUTHENTICATION_ERROR' | 'WRONG_PIN_CODE';
     message: string;
   };
 }

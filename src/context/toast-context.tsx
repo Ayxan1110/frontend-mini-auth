@@ -36,8 +36,9 @@ export const ToastProvider = ({ children }: { children: React.ReactNode }) => {
       <div
         style={{
           position: 'fixed',
-          bottom: '1rem',
-          right: '1rem',
+          top: '2rem',
+          right: '10%',
+          left: '10%',
           zIndex: 9999,
         }}
       >
@@ -45,12 +46,14 @@ export const ToastProvider = ({ children }: { children: React.ReactNode }) => {
           <div
             key={toast.id}
             style={{
-              marginBottom: '0.5rem',
+              margin: 'auto',
               padding: '0.75rem 1rem',
               borderRadius: '4px',
               color: '#fff',
               backgroundColor: toast.type === 'error' ? '#d9534f' : '#5cb85c',
               boxShadow: '0 2px 4px rgba(0, 0, 0, 0.2)',
+              textAlign: 'center',
+              fontSize: '14px',
             }}
           >
             {toast.message}

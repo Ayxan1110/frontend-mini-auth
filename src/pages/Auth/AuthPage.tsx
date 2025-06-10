@@ -1,40 +1,42 @@
+import './AuthPage.css';
 import type React from 'react';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { loginWithCode, loginWithGoogle, registerWithEmail } from '../../api';
+import { MESSAGES } from '../../constants/messages';
 import { useAuth } from '../../context/auth-context';
 import { useToast } from '../../context/toast-context';
 import { useCountdown } from '../../hooks/useCountdown';
-import { isEmail, isLoginCode } from '../../utils/validators';
+import { isLoginCode } from '../../utils/validators';
 
 const AuthPage = () => {
   const [input, setInput] = useState('');
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState('');
   const { countdown, start } = useCountdown(60);
   const navigate = useNavigate();
   const { login } = useAuth();
   const { showToast } = useToast();
 
+  type APIError = {
+    error?: {
+      code?: string;
+      message?: string;
+      details?: { message?: string }[];
+    };
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-
     if (!input.trim()) {
-      showToast('Input required', 'error');
-      setError('Input is required');
+      showToast(MESSAGES.EMAIL_REQUIRED, 'error');
       return;
     }
 
     setLoading(true);
-    setError('');
-
     try {
-      if (isEmail(input)) {
+      if (input.includes('@')) {
         if (countdown > 0) {
-          showToast(
-            `Please wait ${countdown} seconds before resending.`,
-            'error',
-          );
+          showToast(MESSAGES.RESEND_TOO_EARLY(countdown), 'error');
           return;
         }
         await registerWithEmail({ email: input, lang: 'en' });
@@ -43,13 +45,17 @@ const AuthPage = () => {
       } else if (isLoginCode(input)) {
         const data = await loginWithCode({ login_code: input });
         login(data.data.session);
-        showToast('Logged in successfully!', 'success');
+        showToast(MESSAGES.LOGIN_SUCCESS, 'success');
       } else {
-        showToast('Enter a valid email or 16-digit code', 'error');
-        setError('Invalid input');
+        showToast(MESSAGES.INVALID_INPUT, 'error');
       }
-    } catch (err) {
-      showToast('Login failed', 'error');
+    } catch (err: unknown) {
+      const typedError = err as APIError;
+      if (typedError?.error?.code === 'VALIDATION_ERROR') {
+        showToast(typedError.error.message || MESSAGES.LOGIN_FAILED, 'error');
+      } else {
+        showToast(MESSAGES.LOGIN_FAILED, 'error');
+      }
     } finally {
       setLoading(false);
     }
@@ -59,48 +65,50 @@ const AuthPage = () => {
     try {
       const response = await loginWithGoogle();
       login(response.data.session);
+      showToast(MESSAGES.GOOGLE_LOGIN_SUCCESS, 'success');
       navigate('/dashboard');
-    } catch (error) {
-      showToast('Google login failed', 'error');
+    } catch {
+      showToast(MESSAGES.GOOGLE_LOGIN_FAILED, 'error');
     }
   };
 
   return (
-    <div style={{ padding: '1rem' }}>
-      <h2>Login</h2>
-      <form onSubmit={handleSubmit} aria-describedby="login-feedback">
-        <input
-          type="text"
-          placeholder="Enter email or 16-digit code"
-          value={input}
-          onChange={(e) => setInput(e.target.value)}
-          aria-invalid={!!error}
-          style={{
-            width: '100%',
-            padding: '0.5rem',
-            marginBottom: '1rem',
-            borderColor: error ? 'red' : undefined,
-          }}
+    <div className="auth-container">
+      <div className="auth-box">
+        <h1 className="auth-title">Sign In</h1>
+
+        <form onSubmit={handleSubmit}>
+          <input
+            type="text"
+            placeholder="Email or 16-digit code"
+            value={input}
+            onChange={(e) => setInput(e.target.value)}
+            disabled={loading}
+            className="auth-input"
+            data-testid="auth-input"
+          />
+          <button
+            type="submit"
+            disabled={loading}
+            className="auth-button primary"
+            style={{ cursor: loading ? 'not-allowed' : 'pointer' }}
+          >
+            {loading
+              ? 'Please wait…'
+              : countdown > 0
+                ? `Resend in ${countdown}s`
+                : 'Continue'}
+          </button>
+        </form>
+
+        <button
+          onClick={handleGoogleLogin}
           disabled={loading}
-        />
-        <button type="submit" disabled={loading} aria-busy={loading}>
-          {loading
-            ? 'Please wait…'
-            : countdown > 0
-              ? `Resend in ${countdown}s`
-              : 'Continue'}
+          className="auth-button google"
+        >
+          Continue with Google
         </button>
-      </form>
-      <button onClick={handleGoogleLogin} style={{ marginTop: '1rem' }}>
-        Continue with Google
-      </button>
-      <output
-        id="feedback"
-        aria-live="polite"
-        style={{ height: '1rem', marginTop: '0.5rem' }}
-      >
-        {error && <span style={{ color: 'red' }}>{error}</span>}
-      </output>
+      </div>
     </div>
   );
 };

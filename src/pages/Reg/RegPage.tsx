@@ -1,44 +1,40 @@
+import './RegPage.css';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { registerAnonymous } from '../../api';
+import { MESSAGES } from '../../constants/messages';
+import { useToast } from '../../context/toast-context';
 
 const RegPage = () => {
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState('');
   const navigate = useNavigate();
+  const { showToast } = useToast();
 
   const handleAnonymousRegister = async () => {
     setLoading(true);
-    setError('');
-
     try {
       const response = await registerAnonymous();
       const code = response.data.login_code;
       navigate('/reg/code', { state: { loginCode: code } });
     } catch (err) {
-      console.error('Anonymous registration failed:', err);
-      setError('Something went wrong. Please try again.');
+      showToast(MESSAGES.LOGIN_FAILED, 'error');
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div style={{ padding: '1rem' }}>
-      <h2>Register</h2>
-      <button onClick={handleAnonymousRegister} disabled={loading}>
-        {loading ? 'Registering…' : 'Anonymous Registration'}
-      </button>
-
-      {error && (
-        <output
-          id="reg-feedback"
-          aria-live="polite"
-          style={{ color: 'red', marginTop: '1rem', display: 'block' }}
+    <div className="reg-container">
+      <div className="reg-box">
+        <h1 className="reg-title">Register</h1>
+        <button
+          onClick={handleAnonymousRegister}
+          disabled={loading}
+          className="reg-button"
         >
-          {error}
-        </output>
-      )}
+          {loading ? 'Registering…' : 'Anonymous Registration'}
+        </button>
+      </div>
     </div>
   );
 };

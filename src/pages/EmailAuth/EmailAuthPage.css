@@ -1,0 +1,67 @@
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+.email-auth-container {
+  min-height: 100vh;
+  background: #f9f9f6;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 40px;
+}
+
+.email-auth-box {
+  width: 100%;
+  max-width: 450px;
+  padding: 30px;
+  background: #fff;
+  border: 1px solid #eee;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.04);
+}
+
+.email-auth-title {
+  font-size: 28px;
+  margin-bottom: 16px;
+  padding-bottom: 12px;
+}
+
+.email-auth-text {
+  font-size: 14px;
+  margin-bottom: 20px;
+}
+
+.email-auth-input {
+  width: 100%;
+  padding: 12px 4px;
+  font-size: 14px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  margin-bottom: 16px;
+}
+
+.email-auth-button {
+  width: 100%;
+  padding: 12px;
+  font-size: 14px;
+  border-radius: 6px;
+  border: none;
+  margin-bottom: 12px;
+  color: #fff;
+}
+
+.email-auth-button.verify {
+  background-color: #000;
+}
+
+.email-auth-button.resend {
+  background-color: #444;
+}
+
+.email-auth-button.disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+}

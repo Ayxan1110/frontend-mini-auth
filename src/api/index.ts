@@ -1,6 +1,7 @@
 import axios from 'axios';
 import type {
   EmptyDataResponse,
+  GoogleRequest,
   LoginCodeRequest,
   LoginEmailRequest,
   RegisterCodeResponse,
@@ -44,14 +45,13 @@ export const loginWithCode = async (
   return res.data;
 };
 
-export const loginWithGoogle = async (): Promise<SessionResponse> => {
-  // Fake delay for realism
-  await new Promise((resolve) => setTimeout(resolve, 500));
+export const loginWithGoogle = async (
+  payload?: GoogleRequest,
+): Promise<SessionResponse> => {
+  await new Promise((resolve) => setTimeout(resolve, 300));
   return {
     data: {
       session: 'mock-session',
     },
   };
 };
-
-export default api;

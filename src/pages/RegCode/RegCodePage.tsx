@@ -1,5 +1,7 @@
+import './RegCodePage.css';
 import { useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
+import { MESSAGES } from '../../constants/messages';
 import { useToast } from '../../context/toast-context';
 
 const RegCodePage = () => {
@@ -17,21 +19,23 @@ const RegCodePage = () => {
   const copyToClipboard = async () => {
     try {
       await navigator.clipboard.writeText(loginCode);
-      showToast('Copied!', 'success');
-    } catch (err) {
-      showToast('Copy failed. Try again.', 'error');
+      showToast(MESSAGES.COPY_SUCCESS, 'success');
+    } catch {
+      showToast(MESSAGES.COPY_FAILED, 'error');
     }
   };
 
   if (!loginCode) return null;
 
   return (
-    <div style={{ padding: '1rem' }}>
-      <h2>Your Anonymous Login Code</h2>
-      <p>
-        <strong>{loginCode}</strong>
-      </p>
-      <button onClick={copyToClipboard}>Copy to Clipboard</button>
+    <div className="regcode-container">
+      <div className="regcode-box">
+        <h1 className="regcode-title">Your Anonymous Login Code</h1>
+        <p className="regcode-code">{loginCode}</p>
+        <button onClick={copyToClipboard} className="regcode-button">
+          Copy to Clipboard
+        </button>
+      </div>
     </div>
   );
 };

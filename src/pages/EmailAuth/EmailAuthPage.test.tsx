@@ -33,7 +33,8 @@ describe('EmailAuthPage', () => {
     fireEvent.click(screen.getByText(/verify/i));
 
     await waitFor(() => {
-      expect(screen.getByText(/login successful/i)).toBeInTheDocument();
+      const toasts = screen.getAllByText(/logged in successfully/i);
+      expect(toasts.length).toBeGreaterThan(0);
     });
   });
 
