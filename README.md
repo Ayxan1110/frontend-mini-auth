@@ -1,59 +1,99 @@
 # Frontend Mini Auth
 
-This is my implementation of the [Grand Partners frontend technical task](https://github.com/grandpartners/frontend-test-template).
+A minimalist authentication system built with **React + TypeScript**, developed as part of a technical assignment. Features multiple authentication flows, clean UI, full test coverage, and mock server integration.
 
-It is a minimal authentication flow built with React, TypeScript, and Vite.
+## 📁 Project Structure
 
----
+```
+src/
+├── api/                  # Axios-based API client for backend communication
+├── constants/            # Centralized constant messages
+├── context/              # Global context providers (Auth & Toast)
+├── hooks/                # Reusable custom hooks (e.g., countdown timer)
+├── mocks/                # Mock Service Worker setup and handlers
+├── pages/                # Route-based page components
+│   ├── Auth/             # Sign-in with email/code/Google
+│   ├── EmailAuth/        # Email PIN code verification
+│   ├── Reg/              # Anonymous registration page
+│   └── RegCode/          # Code copy confirmation view
+├── test/                 # Global test setup (Vitest + MSW)
+├── types/                # TypeScript interfaces and types
+└── utils/                # Input validation utilities
+```
 
-## Tech Stack
+## 🚀 Stack
 
 - React + TypeScript
-- Vite
+- React Router v6
 - Vitest + Testing Library
 - MSW (Mock Service Worker)
-- Custom Hooks (e.g. countdown)
-- Toast notifications via context
+- Biome (Lint + Format)
+- GitLab CI-ready
 
----
+## ✅ Features
 
-## Getting Started
+- 🔐 Email login with 6-digit PIN verification
+- 🔐 Anonymous login via 16-digit code
+- 🔐 Mock Google OAuth login
+- 🔁 Resend countdown timer (email flow)
+- 🍞 Reusable toast notification system
+- 🎨 Minimalist and responsive UI with inline + CSS Modules
+- ✅ 100% test coverage (unit + integration)
+
+## 🧪 Testing
+
+- **Unit & integration tests** written using:
+  - `@testing-library/react`
+  - `vitest`
+  - `msw` (mocking API calls)
 
 ```bash
-git clone https://github.com/your-username/frontend-mini-auth.git
-cd frontend-mini-auth
+npm run test       # Run test suite
+npm run check      # Format & lint via Biome
+```
+
+## 💻 Local Development
+
+```bash
 npm install
 npm run dev
 ```
 
-Visit [http://localhost:5173](http://localhost:5173)
+App runs at: [http://localhost:5173](http://localhost:5173)
 
----
+## 🧪 Mock Server Behavior
 
-## Running Tests
+The mock backend handles:
+- ❌ Invalid email formats (returns 422)
+- 🔐 Valid PIN is `123456`
+- ⚠️ Resend restriction during countdown
+- ✅ Mocked Google login always returns `mock-session`
+
+## 📦 Build
 
 ```bash
-npm run test
+npm run build
 ```
 
----
+## 📁 Environment
 
-## Notes & Improvements
+No environment variables required. Project runs entirely on mocked data.
 
-- ✅ Context-based Auth and Toast providers
-- ✅ Full validation with visual feedback and accessibility
-- ✅ All flows tested: anonymous, email-based, Google (mocked)
-- ✅ Used MSW to simulate backend with error conditions (422, wrong PIN, etc.)
-- ✅ Minimal and clean UI matching the original design tone
+## 📌 Notes
 
----
-
-## Task Status
-
-✅ Completed within deadline  
-✅ Fully functional  
-✅ Tested manually and automatically
+- Folder naming is consistent and scoped.
+- Code splitting by page.
+- Styled minimally, but clearly.
+- Thoroughly tested.
 
 ---
 
-Thank you for the opportunity!
+## 📬 Submission
+
+This project was developed and submitted as part of a technical assignment for **Grand Partners**.
+
+If you have any questions, feel free to reach out via LinkedIn.
+
+---
+
+**Thank you for reviewing!**
