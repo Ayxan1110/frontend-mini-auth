@@ -69,10 +69,14 @@ export const handlers = [
 
   rest.post(
     'http://localhost:8080/v1/user/register/google_account',
-    (_req, res, ctx) => {
+    (req, res, ctx) => {
       return res(
         ctx.status(200),
-        ctx.json({ data: { session: 'mock-session' } }),
+        ctx.json({
+          data: {
+            session: 'mock-session',
+          },
+        }),
       );
     },
   ),

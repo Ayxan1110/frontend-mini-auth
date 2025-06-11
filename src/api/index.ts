@@ -46,12 +46,11 @@ export const loginWithCode = async (
 };
 
 export const loginWithGoogle = async (
-  payload?: GoogleRequest,
+  payload: GoogleRequest,
 ): Promise<SessionResponse> => {
-  await new Promise((resolve) => setTimeout(resolve, 300));
-  return {
-    data: {
-      session: 'mock-session',
-    },
-  };
+  const res = await api.post<SessionResponse>(
+    '/user/register/google_account',
+    payload,
+  );
+  return res.data;
 };

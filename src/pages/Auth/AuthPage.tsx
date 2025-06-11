@@ -63,7 +63,12 @@ const AuthPage = () => {
 
   const handleGoogleLogin = async () => {
     try {
-      const response = await loginWithGoogle();
+      const payload = {
+        code: 'sample-auth-code',
+        redirect_uri: 'http://localhost:5173/auth/callback/google',
+      };
+
+      const response = await loginWithGoogle(payload);
       login(response.data.session);
       showToast(MESSAGES.GOOGLE_LOGIN_SUCCESS, 'success');
       navigate('/dashboard');
